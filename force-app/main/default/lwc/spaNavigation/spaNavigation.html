@@ -1,0 +1,28 @@
+<template>
+    <div class="navigation">
+        <lightning-vertical-navigation selected-item={selectedPage}>
+            <lightning-vertical-navigation-section label={label.Main_Menu} selected-item={selectedPage}>
+
+                <template for:each={menuItems} for:item="menuItem">
+                    <div key={menuItem.PageId__c} class="slds-is-relative slds-list_horizontal slds-media_center">
+
+                        <div class="slds-is-absolute badge" if:true={menuItem.NavigationBadgeEnabled__c}>
+                            <lightning-badge label={menuItem.badgeAmount}></lightning-badge>
+                        </div>
+
+                        <lightning-vertical-navigation-item-icon
+                            style="width:100%;"
+                            label={menuItem.label}
+                            class="nav-font"
+                            name={menuItem.URLParameter__c}
+                            icon-name={menuItem.NavigationSLDSIcon__c}
+                            data-page={menuItem.URLParameter__c}
+                            onclick={handleNavigation}>
+                        </lightning-vertical-navigation-item-icon>
+                    </div>
+                </template>
+
+            </lightning-vertical-navigation-section>
+        </lightning-vertical-navigation>
+    </div>
+</template>
