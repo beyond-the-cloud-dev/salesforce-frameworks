@@ -7,10 +7,14 @@ export default class PageTemplate extends NavigationMixin(LightningElement) {
     currentPageReference;
     pagesConfig;
     landingPage;
+
     currentPage;
+    currentPageUrlParam;
+    currentPageId;
 
     currentPageReferenceLoaded = false;
     pagesConfigLoaded = false;
+    isLoaded = false;
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -42,6 +46,8 @@ export default class PageTemplate extends NavigationMixin(LightningElement) {
 
         this.setLandingPage();
         this.setCurrentPage();
+
+        this.isLoaded = true;
     }
 
     setLandingPage() {
@@ -53,7 +59,8 @@ export default class PageTemplate extends NavigationMixin(LightningElement) {
     }
 
     setCurrentPage() {
-        const currentPageUrl = this.currentPageReference?.state?.c__page || this.landingPage?.urlParam;
-        this.currentPage = this.pagesConfig?.find(page => page.urlParam === currentPageUrl);
+        this.currentPageUrlParam = this.currentPageReference?.state?.c__page || this.landingPage?.urlParam;
+        this.currentPage = this.pagesConfig?.find(page => page.urlParam === this.currentPageUrlParam);
+        this.currentPageId = this.currentPage?.pageId;
     }
 }

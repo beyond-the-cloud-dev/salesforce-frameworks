@@ -3,7 +3,7 @@ import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 
 export default class SpaNavigation extends NavigationMixin(LightningElement) {
 
-    @api selectedPageId;
+    @api selectedPageUrl;
     @api pagesConfig;
 
     @track menuItems;
@@ -23,9 +23,10 @@ export default class SpaNavigation extends NavigationMixin(LightningElement) {
 
     init() {
         this.menuItems = this.pagesConfig.map(page => ({
+            pageId: page.pageId,
             label: page.name,
             urlParam: page.urlParam,
-            isCurrent: page.pageId === this.selectedPageId
+            isCurrent: page.urlParam === this.selectedPageUrl
         }))
     }
 

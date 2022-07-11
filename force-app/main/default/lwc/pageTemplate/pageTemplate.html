@@ -1,4 +1,6 @@
 <template>
-        {currentPage.urlParam}
-        {currentPage.pageId}
+       <template if:true={isLoaded}>
+                <c-spa-navigation selected-page-url={currentPageUrlParam} pages-config={pagesConfig}></c-spa-navigation>
+                <c-spa-pages selected-page-id={currentPageId}></c-spa-pages>
+        </template>
 </template>

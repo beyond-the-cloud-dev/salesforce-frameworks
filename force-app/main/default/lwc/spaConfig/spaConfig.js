@@ -5,7 +5,6 @@ const CONFIG = [
     { name: 'Contact', isActive: true, isLandingPage: false, menuOrder: 4, pageId: 'contact', urlParam: 'contact' },
 ];
 
-
 const getPagesConfigCallout = () => new Promise((resolve, reject) => {
     resolve(CONFIG); //apex callout simulation
 });
