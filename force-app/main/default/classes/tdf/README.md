@@ -67,18 +67,33 @@ classDiagram
 
     class TDF_SubFactory {
         <<abstract>>
-        -List fieldsValues;
-        -Integer recordAmount;
-        -Boolean repeatValuesOverriding;
-        +setRecordsAmount(Integer recordAmount) TDF_SubFactory
-        +addFieldsValues(Map fieldsValues) TDF_SubFactory
-        +withRepeatValuesOverriding()
+        +passConfigurator(TDF_Configurator configurator) TDF_SubFactory
         +createAndInsertRecord() sObject
         +createRecord() sObject
         +createAndInsertRecords() List<sObject>
         +createRecords() List<sObject>
         -getRecords() List<sObject>
         -fillRecordsWithCustomValues(List<sObject> records)
+    }
+
+    class TDF_Configuration {
+        -List fieldsValues
+        -Integer recordAmount
+        -Boolean repeatValuesOverriding
+    }
+
+    class TDF_Configurator {
+        +setRecordsAmount(Integer recordAmount) TDF_SubFactory
+        +addFieldsValues(Map fieldsValues) TDF_SubFactory
+        +withRepeatValuesOverriding()
+        build() TDF_Configuration
+    }
+
+    class TDF_Maker {
+        +createAndInsertRecord() sObject
+        +createRecord() sObject
+        +createAndInsertRecords() List<sObject>
+        +createRecords() List<sObject>
     }
 
     class TDF_Accounts {
@@ -112,6 +127,10 @@ classDiagram
     TDF_Factory --|> TDF_Accounts
     TDF_Factory --|> TDF_Contacts
 
+    TDF_Maker *-- TDF_SubFactory
+    TDF_Maker *-- TDF_Configuration
+    TDF_Configurator *-- TDF_Configuration
+    TDF_SubFactory  *-- TDF_Configurator
     TDF_SubFactory --|> TDF_AccountVariantA
     TDF_SubFactory --|> TDF_AccountVariantB
     TDF_SubFactory --|> TDF_AccountVariantC
@@ -129,7 +148,10 @@ classDiagram
     // {Contact: {Name: 'Variant B1'}}
 
     //simple creation - multiple records
-    TDF_TestDataCreator.get(Account.sObjectType).get('VARIANT_A').setRecordsAmount(5).createAndInsertRecord();
+    TDF_TestDataCreator.get(Account.sObjectType).get('VARIANT_A')
+        .passConfigurator(
+            new TDF_Configurator().setRecordsAmount(5)
+        ).createAndInsertRecord();
     // [
     //     {Account: {Name: 'Variant A1'}},
     //     {Account: {Name: 'Variant A2'}},
@@ -137,18 +159,25 @@ classDiagram
     //     {Account: {Name: 'Variant A4'}},
     //     {Account: {Name: 'Variant A5'}}
     // ]
-    TDF_TestDataCreator.get(Contact.sObjectType).get('VARIANT_B').setRecordsAmount(2).createAndInsertRecord();
+    TDF_TestDataCreator.get(Contact.sObjectType).get('VARIANT_B')
+        .passConfigurator(
+            new TDF_Configurator().setRecordsAmount(2)
+        ).createAndInsertRecord();
     // [
     //     {Contact: {Name: 'Variant B1'}},
     //     {Contact: {Name: 'Variant B2'}}
     // ]
 
     //override or pass values - one record
-    TDF_TestDataCreator.get(Account.sObjectType).get('VARIANT_A').addFieldsValues(
-        new Map<sObjectField, Object>{
-            Account.Name => 'Custom Name'
-        }
-    ).createAndInsertRecord();
+    TDF_TestDataCreator.get(Account.sObjectType).get('VARIANT_A')
+        .passConfigurator(
+            new TDF_Configurator()
+                .addFieldsValues(
+                    new Map<sObjectField, Object>{
+                        Account.Name => 'Custom Name'
+                    }
+                )
+        ).createAndInsertRecord();
     // {Account: {Name: 'Custom Name'}}
 
     TDF_TestDataCreator.get(Contact.sObjectType).get('VARIANT_B').addFieldsValues(
@@ -160,21 +189,24 @@ classDiagram
 
     //override or pass values - multiple records
     TDF_TestDataCreator.get(Account.sObjectType).get('VARIANT_A')
-        .setRecordsAmount(5)
-        .addFieldsValues(
-            new Map<sObjectField, Object>{
-                Account.Name => 'Custom Name for Record 1'
-            }
-        )
-        .addFieldsValues(
-            new Map<sObjectField, Object>{
-                Account.Name => 'Custom Name for Record 2'
-            }
-        )
-        .addFieldsValues(
-            new Map<sObjectField, Object>{
-                Account.Name => 'Custom Name for Record 3'
-            }
+        .passConfigurator(
+            new TDF_Configurator()
+                .setRecordsAmount(5)
+                .addFieldsValues(
+                    new Map<sObjectField, Object>{
+                        Account.Name => 'Custom Name for Record 1'
+                    }
+                )
+                .addFieldsValues(
+                    new Map<sObjectField, Object>{
+                        Account.Name => 'Custom Name for Record 2'
+                    }
+                )
+                .addFieldsValues(
+                    new Map<sObjectField, Object>{
+                        Account.Name => 'Custom Name for Record 3'
+                    }
+                )
         )
         .createAndInsertRecord();
     // [
@@ -187,22 +219,25 @@ classDiagram
 
     //override or pass values - multiple recordsc - with repeat values overriding
     TDF_TestDataCreator.get(Account.sObjectType).get('VARIANT_A')
-        .setRecordsAmount(5)
-        .withRepeatValuesOverriding()
-        .addFieldsValues(
-            new Map<sObjectField, Object>{
-                Account.Name => 'Custom Name for Record 1'
-            }
-        )
-        .addFieldsValues(
-            new Map<sObjectField, Object>{
-                Account.Name => 'Custom Name for Record 2'
-            }
-        )
-        .addFieldsValues(
-            new Map<sObjectField, Object>{
-                Account.Name => 'Custom Name for Record 3'
-            }
+        .passConfigurator(
+            new TDF_Configurator()
+                .setRecordsAmount(5)
+                .withRepeatValuesOverriding()
+                .addFieldsValues(
+                    new Map<sObjectField, Object>{
+                        Account.Name => 'Custom Name for Record 1'
+                    }
+                )
+                .addFieldsValues(
+                    new Map<sObjectField, Object>{
+                        Account.Name => 'Custom Name for Record 2'
+                    }
+                )
+                .addFieldsValues(
+                    new Map<sObjectField, Object>{
+                        Account.Name => 'Custom Name for Record 3'
+                    }
+                )
         )
         .createAndInsertRecord();
     // [
