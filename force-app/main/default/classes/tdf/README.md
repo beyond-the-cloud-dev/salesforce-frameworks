@@ -67,6 +67,7 @@ classDiagram
 
     class TDF_SubFactory {
         <<abstract>>
+        TDF_Maker maker
         +passConfigurator(TDF_Configurator configurator) TDF_SubFactory
         +createAndInsertRecord() sObject
         +createRecord() sObject
