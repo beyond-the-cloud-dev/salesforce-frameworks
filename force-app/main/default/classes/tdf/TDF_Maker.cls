@@ -5,8 +5,11 @@ public class TDF_Maker {
 
     public TDF_Maker(TDF_SubFactory subFactory) {
         this.subFactory = subFactory;
+        this.configuration = new TDF_Configurator().build();
+    }
 
-        this.configuration = subFactory.configurator.build();
+    public void setConfigurator(TDF_Configurator configurator) {
+        this.configuration = configurator.build();
     }
 
     public sObject createAndInsertRecord() {

@@ -1,27 +1,31 @@
 public abstract class TDF_SubFactory {
 
-    public TDF_Configurator configurator = new TDF_Configurator();
+    private TDF_Maker maker;
 
     public abstract sObject getRecord(Integer index);
 
+    public TDF_SubFactory() {
+        this.maker = new TDF_Maker(this);
+    }
+
     public TDF_SubFactory passConfigurator(TDF_Configurator configurator) {
-        this.configurator = configurator;
+        this.maker.setConfigurator(configurator);
         return this;
     }
 
     public sObject createAndInsertRecord() {
-        return new TDF_Maker(this).createAndInsertRecord();
+        return this.maker.createAndInsertRecord();
     }
 
     public sObject createRecord() {
-        return new TDF_Maker(this).createRecord();
+        return this.maker.createRecord();
     }
 
     public List<sObject> createAndInsertRecords() {
-        return new TDF_Maker(this).createAndInsertRecords();
+        return this.maker.createAndInsertRecords();
     }
 
     public List<sObject> createRecords() {
-        return new TDF_Maker(this).createRecords();
+        return this.maker.createRecords();
     }
 }
