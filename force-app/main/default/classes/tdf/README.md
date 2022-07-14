@@ -72,8 +72,6 @@ classDiagram
         +createRecord() sObject
         +createAndInsertRecords() List<sObject>
         +createRecords() List<sObject>
-        -getRecords() List<sObject>
-        -fillRecordsWithCustomValues(List<sObject> records)
     }
 
     class TDF_Configuration {
@@ -90,10 +88,13 @@ classDiagram
     }
 
     class TDF_Maker {
+        -TDF_SubFactory subFactory
+        -TDF_Configuration configuration
         +createAndInsertRecord() sObject
         +createRecord() sObject
         +createAndInsertRecords() List<sObject>
         +createRecords() List<sObject>
+        +setConfigurator(TDF_Configurator configurator)
     }
 
     class TDF_Accounts {
@@ -130,7 +131,7 @@ classDiagram
     TDF_Maker *-- TDF_SubFactory
     TDF_Maker *-- TDF_Configuration
     TDF_Configurator *-- TDF_Configuration
-    TDF_SubFactory  *-- TDF_Configurator
+
     TDF_SubFactory --|> TDF_AccountVariantA
     TDF_SubFactory --|> TDF_AccountVariantB
     TDF_SubFactory --|> TDF_AccountVariantC
